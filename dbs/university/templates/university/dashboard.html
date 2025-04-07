@@ -1,0 +1,147 @@
+{% extends "university/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Welcome, {{ user.get_full_name }}</h2>
+    
+    {% if user.role == 'Admin' %}
+        <!-- Admin Dashboard -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Student Management</h5>
+                        <a href="{% url 'add_student' %}" class="btn btn-primary">Add New Student</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Department</th>
+                                        <th>Status</th>
+                                        <th>GPA</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for student in students %}
+                                    <tr>
+                                        <td>{{ student.user.get_full_name }}</td>
+                                        <td>{{ student.user.email }}</td>
+                                        <td>{{ student.department.department_name|default:"Not assigned" }}</td>
+                                        <td>{{ student.status }}</td>
+                                        <td>{{ student.gpa }}</td>
+                                        <td>
+                                            <a href="{% url 'edit_student' student.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% elif user.role == 'Student' %}
+        <!-- Student Dashboard -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Student Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Name:</strong> {{ student.user.get_full_name }}</p>
+                        <p><strong>Department:</strong> {{ student.department.department_name|default:"Not assigned" }}</p>
+                        <p><strong>Status:</strong> {{ student.status }}</p>
+                        <p><strong>GPA:</strong> {{ student.gpa }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Current Enrollments</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Course</th>
+                                        <th>Semester</th>
+                                        <th>Year</th>
+                                        <th>Grade</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for enrollment in enrollments %}
+                                    <tr>
+                                        <td>{{ enrollment.course.course_name }}</td>
+                                        <td>{{ enrollment.semester }}</td>
+                                        <td>{{ enrollment.year }}</td>
+                                        <td>{{ enrollment.grade|default:"Not graded" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% elif user.role == 'Faculty' %}
+        <!-- Faculty Dashboard -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Faculty Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Name:</strong> {{ faculty.user.get_full_name }}</p>
+                        <p><strong>Department:</strong> {{ faculty.department.department_name|default:"Not assigned" }}</p>
+                        <p><strong>Title:</strong> {{ faculty.title }}</p>
+                        <p><strong>Specialization:</strong> {{ faculty.specialization }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Research Projects</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Project Title</th>
+                                        <th>Status</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for project in research_projects %}
+                                    <tr>
+                                        <td>{{ project.title }}</td>
+                                        <td>{{ project.status }}</td>
+                                        <td>{{ project.start_date }}</td>
+                                        <td>{{ project.end_date|default:"Ongoing" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 
